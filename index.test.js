@@ -1,28 +1,5 @@
 const { makeChange } = require("./makeChange");
 
-const testCases = [
-	{
-		x: 6,
-		coinset: [1, 5, 10, 25],
-		expected: [{ 1: 6 }, { 1: 1, 5: 1 }],
-	},
-	{
-		x: 6,
-		coinset: [3, 4],
-		expected: [{ 3: 2 }],
-	},
-	{
-		x: 6,
-		coinset: [1, 3, 4],
-		expected: [{ 1: 6 }, { 3: 2 }, { 1: 3, 3: 1 }, { 1: 2, 4: 1 }],
-	},
-	{
-		x: 6,
-		coinset: [5, 7],
-		expected: "error",
-	},
-];
-
 describe("makeChange", () => {
 	it("calculates change for single number", () => {
 		expect(makeChange(7, [1])).toEqual(expect.arrayContaining([{ 1: 7 }]));
@@ -48,6 +25,29 @@ describe("makeChange", () => {
 		expect(() => makeChange(7, [3, 8])).toThrow();
 	});
 });
+
+const testCases = [
+	{
+		x: 6,
+		coinset: [1, 5, 10, 25],
+		expected: [{ 1: 6 }, { 1: 1, 5: 1 }],
+	},
+	{
+		x: 6,
+		coinset: [3, 4],
+		expected: [{ 3: 2 }],
+	},
+	{
+		x: 6,
+		coinset: [1, 3, 4],
+		expected: [{ 1: 6 }, { 3: 2 }, { 1: 3, 3: 1 }, { 1: 2, 4: 1 }],
+	},
+	{
+		x: 6,
+		coinset: [5, 7],
+		expected: "error",
+	},
+];
 
 testCases.forEach((testCase) => {
 	const { x, coinset, expected } = testCase;
