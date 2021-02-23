@@ -56,26 +56,6 @@ function checkSumCombinations(
 ) {
   const results = [];
 
-  if (coin1 <= target) {
-    const counter = checkTwoCoins(target, coin1, coin1, coin2, {
-      [coin1]: initialCounters[coin1] + 1,
-      [coin2]: initialCounters[coin2],
-    });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
-  }
-
-  if (coin2 <= target) {
-    const counter = checkTwoCoins(target, coin2, coin1, coin2, {
-      [coin1]: initialCounters[coin1],
-      [coin2]: initialCounters[coin2] + 1,
-    });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
-  }
-
   if (coin1 + coin2 <= target) {
     const counter = checkTwoCoins(target, coin1 + coin2, coin1, coin2, {
       [coin1]: initialCounters[coin1] + 1,
@@ -100,6 +80,26 @@ function checkSumCombinations(
     const counter = checkTwoCoins(target, coin2 + coin2, coin1, coin2, {
       [coin1]: initialCounters[coin1],
       [coin2]: initialCounters[coin2] + 2,
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
+  }
+
+  if (coin1 <= target) {
+    const counter = checkTwoCoins(target, coin1, coin1, coin2, {
+      [coin1]: initialCounters[coin1] + 1,
+      [coin2]: initialCounters[coin2],
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
+  }
+
+  if (coin2 <= target) {
+    const counter = checkTwoCoins(target, coin2, coin1, coin2, {
+      [coin1]: initialCounters[coin1],
+      [coin2]: initialCounters[coin2] + 1,
     });
     if (counter && !checkCounterExists(results, counter)) {
       results.push(counter);
