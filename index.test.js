@@ -11,6 +11,12 @@ describe("makeChange", () => {
 		);
 	});
 
+	it("calculates change if coins have to be summed >1 times", () => {
+		expect(makeChange(30, [4, 9])).toEqual(
+			expect.arrayContaining([{4: 3, 9: 2}])
+		)
+	})
+
 	it("combines different variants", () => {
 		expect(makeChange(7, [1, 5])).toEqual(
 			expect.arrayContaining([{ 1: 7 }, { 1: 2, 5: 1 }])

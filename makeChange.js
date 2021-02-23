@@ -1,28 +1,31 @@
-function checkTwoCoins(x, coin1, coin2) {
+function checkTwoCoins(x, coin1, coin2, result={[coin1]: 0, [coin2]: 0}) {
 	const sum = coin1 + coin2;
 	if (sum > x) {
-		return null;
+		return result;
 	}
+
+	result[coin1]++
+	result[coin2]++
+
 	if (sum === x) {
-		return {
-			[coin1]: 1,
-			[coin2]: 1,
-		};
+		return result;
 	}
 
 	const diff = x - sum;
 	const canSumWithCoin1 = diff % coin1 === 0;
 	const canSumWithCoin2 = diff % coin2 === 0;
 	if (!canSumWithCoin1 && !canSumWithCoin2) {
+		if (diff > coin1 || diff > coin2) {
+			return checkTwoCoins(diff, coin1, coin2, result)
+		}
 		return null;
 	}
-
-	// We add 1 to both coins as they were initially summed
-	// in the beginning of a function
-	return {
-		[coin1]: canSumWithCoin1 ? diff / coin1 + 1 : 1,
-		[coin2]: canSumWithCoin2 ? diff / coin2 + 1 : 1,
-	};
+	if (canSumWithCoin1) {
+		result[coin1] += diff / coin1
+	} else {
+		result[coin2] += diff / coin1
+	}
+	return result
 }
 
 function makeChange(x, initialCoinSet) {
