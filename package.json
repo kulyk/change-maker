@@ -4,6 +4,7 @@
   "description": "Change maker 👐",
   "main": "index.js",
   "scripts": {
+		"format": "npx prettier --write  *.js",
     "test": "jest"
   },
   "devDependencies": {
