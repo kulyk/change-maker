@@ -26,7 +26,7 @@ function checkTwoCoins(x, coin1, coin2, result = { [coin1]: 0, [coin2]: 0 }) {
   if (canSumWithCoin1) {
     result[coin1] += diff / coin1;
   } else {
-    result[coin2] += diff / coin1;
+    result[coin2] += diff / coin2;
   }
 
   return result;
