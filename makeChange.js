@@ -31,21 +31,34 @@ function checkTwoCoins(target, accumulatedSum, coin1, coin2, counters) {
   return null;
 }
 
-function checkCounterExists(results, counter) {
+function validateAndAddCounter(results, counter) {
+  if (!counter) {
+    return;
+  }
+  if (Array.isArray(counter)) {
+    if (!counter.length) {
+      return;
+    }
+    counter.forEach((c) => {
+      validateAndAddCounter(results, c);
+    });
+    return;
+  }
   const [coin1, coin2] = Object.keys(counter);
   const coin1Count = counter[coin1];
   const coin2Count = counter[coin2];
   let exists = false;
   for (let i = 0; i < results.length; i++) {
     const savedCounter = results[i];
-    const coins = Object.keys(savedCounter);
     exists =
       savedCounter[coin1] === coin1Count && savedCounter[coin2] === coin2Count;
     if (exists) {
       break;
     }
   }
-  return exists;
+  if (!exists) {
+    results.push(counter);
+  }
 }
 
 function checkSumCombinations(
@@ -61,9 +74,7 @@ function checkSumCombinations(
       [coin1]: initialCounters[coin1] + 1,
       [coin2]: initialCounters[coin2] + 1,
     });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
+    validateAndAddCounter(results, counter);
   }
 
   if (coin1 + coin1 <= target) {
@@ -71,9 +82,7 @@ function checkSumCombinations(
       [coin1]: initialCounters[coin1] + 2,
       [coin2]: initialCounters[coin2],
     });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
+    validateAndAddCounter(results, counter);
   }
 
   if (coin2 + coin2 <= target) {
@@ -81,9 +90,7 @@ function checkSumCombinations(
       [coin1]: initialCounters[coin1],
       [coin2]: initialCounters[coin2] + 2,
     });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
+    validateAndAddCounter(results, counter);
   }
 
   if (coin1 <= target) {
@@ -91,9 +98,7 @@ function checkSumCombinations(
       [coin1]: initialCounters[coin1] + 1,
       [coin2]: initialCounters[coin2],
     });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
+    validateAndAddCounter(results, counter);
   }
 
   if (coin2 <= target) {
@@ -101,9 +106,7 @@ function checkSumCombinations(
       [coin1]: initialCounters[coin1],
       [coin2]: initialCounters[coin2] + 1,
     });
-    if (counter && !checkCounterExists(results, counter)) {
-      results.push(counter);
-    }
+    validateAndAddCounter(results, counter);
   }
 
   return results;
