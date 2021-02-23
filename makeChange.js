@@ -15,10 +15,12 @@ function checkTwoCoins(x, coin1, coin2, result = { [coin1]: 0, [coin2]: 0 }) {
   const canSumWithCoin1 = diff % coin1 === 0;
   const canSumWithCoin2 = diff % coin2 === 0;
   if (!canSumWithCoin1 && !canSumWithCoin2) {
-    if (diff > coin1 || diff > coin2) {
-      return checkTwoCoins(diff, coin1, coin2, result);
+    // If each coin is already bigger than a difference,
+    // we definitely can't get the X out of these coins
+    if (coin1 > diff || coin2 > diff) {
+      return null;
     }
-    return null;
+    return checkTwoCoins(diff, coin1, coin2, result);
   }
 
   if (canSumWithCoin1) {

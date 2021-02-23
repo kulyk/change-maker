@@ -17,7 +17,6 @@ describe("makeChange", () => {
     );
   });
 
-
   it("calculates change for a lot of numbers", () => {
     expect(makeChange(19, [1, 2, 4, 8])).toEqual(
       expect.arrayContaining([
@@ -32,9 +31,7 @@ describe("makeChange", () => {
 
   it("does not include results to be intermediately dropped", () => {
     expect(makeChange(19, [1, 4, 8])).not.toEqual(
-      expect.arrayContaining([
-        {4: 1, 8: 1},
-      ])
+      expect.arrayContaining([{ 4: 1, 8: 1 }])
     );
   });
 
