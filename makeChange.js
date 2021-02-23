@@ -31,60 +31,82 @@ function checkTwoCoins(target, accumulatedSum, coin1, coin2, counters) {
   return null;
 }
 
+function checkCounterExists(results, counter) {
+  const [coin1, coin2] = Object.keys(counter);
+  const coin1Count = counter[coin1];
+  const coin2Count = counter[coin2];
+  let exists = false;
+  for (let i = 0; i < results.length; i++) {
+    const savedCounter = results[i];
+    const coins = Object.keys(savedCounter);
+    exists =
+      savedCounter[coin1] === coin1Count && savedCounter[coin2] === coin2Count;
+    if (exists) {
+      break;
+    }
+  }
+  return exists;
+}
+
 function checkSumCombinations(
   target,
   coin1,
   coin2,
-  counters = { [coin1]: 0, [coin2]: 0 }
+  initialCounters = { [coin1]: 0, [coin2]: 0 }
 ) {
-  const cases = [];
+  const results = [];
 
   if (coin1 <= target) {
-    cases.push(
-      checkTwoCoins(target, coin1, coin1, coin2, {
-        [coin1]: counters[coin1] + 1,
-        [coin2]: counters[coin2],
-      })
-    );
+    const counter = checkTwoCoins(target, coin1, coin1, coin2, {
+      [coin1]: initialCounters[coin1] + 1,
+      [coin2]: initialCounters[coin2],
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
   }
 
   if (coin2 <= target) {
-    cases.push(
-      checkTwoCoins(target, coin2, coin1, coin2, {
-        [coin1]: counters[coin1],
-        [coin2]: counters[coin2] + 1,
-      })
-    );
+    const counter = checkTwoCoins(target, coin2, coin1, coin2, {
+      [coin1]: initialCounters[coin1],
+      [coin2]: initialCounters[coin2] + 1,
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
   }
 
   if (coin1 + coin2 <= target) {
-    cases.push(
-      checkTwoCoins(target, coin1 + coin2, coin1, coin2, {
-        [coin1]: counters[coin1] + 1,
-        [coin2]: counters[coin2] + 1,
-      })
-    );
+    const counter = checkTwoCoins(target, coin1 + coin2, coin1, coin2, {
+      [coin1]: initialCounters[coin1] + 1,
+      [coin2]: initialCounters[coin2] + 1,
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
   }
 
   if (coin1 + coin1 <= target) {
-    cases.push(
-      checkTwoCoins(target, coin1 + coin1, coin1, coin2, {
-        [coin1]: counters[coin1] + 2,
-        [coin2]: counters[coin2],
-      })
-    );
+    const counter = checkTwoCoins(target, coin1 + coin1, coin1, coin2, {
+      [coin1]: initialCounters[coin1] + 2,
+      [coin2]: initialCounters[coin2],
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
   }
 
   if (coin2 + coin2 <= target) {
-    cases.push(
-      checkTwoCoins(target, coin2 + coin2, coin1, coin2, {
-        [coin1]: counters[coin1],
-        [coin2]: counters[coin2] + 2,
-      })
-    );
+    const counter = checkTwoCoins(target, coin2 + coin2, coin1, coin2, {
+      [coin1]: initialCounters[coin1],
+      [coin2]: initialCounters[coin2] + 2,
+    });
+    if (counter && !checkCounterExists(results, counter)) {
+      results.push(counter);
+    }
   }
 
-  return cases;
+  return results;
 }
 
 function shouldTryCoins(x, c1, c2) {
@@ -100,44 +122,23 @@ function shouldTryCoins(x, c1, c2) {
 }
 
 function makeChange(x, initialCoinSet) {
-  const single = [];
-  let combinations = [];
+  const result = [];
 
   // Coins that are already bigger than x are useless here
   const coinSet = initialCoinSet.filter((coin) => coin < x);
 
   coinSet.forEach((coin, i) => {
     if (x % coin === 0) {
-      single.push({ [coin]: x / coin });
+      result.push({ [coin]: x / coin });
     }
     for (let nextIndex = i + 1; nextIndex < coinSet.length; nextIndex++) {
       const nextCoin = coinSet[nextIndex];
       if (shouldTryCoins(x, coin, nextCoin)) {
-        combinations.push(...checkSumCombinations(x, coin, nextCoin));
+        result.push(...checkSumCombinations(x, coin, nextCoin));
       }
     }
   });
 
-  combinations = combinations.filter(Boolean);
-  let unique = combinations.map((combo) => {
-    const [coin1, coin2] = Object.keys(combo);
-    const coin1Count = combo[coin1];
-    const coin2Count = combo[coin2];
-    return `${coin1}-${coin1Count}:${coin2}-${coin2Count}`;
-  });
-
-  unique = new Set(unique);
-  unique = Array.from(unique).map((code) => {
-    const [coin1Code, coin2Code] = code.split(":");
-    const [coin1, coin1Count] = coin1Code.split("-");
-    const [coin2, coin2Count] = coin2Code.split("-");
-    return {
-      [coin1]: parseInt(coin1Count),
-      [coin2]: parseInt(coin2Count),
-    };
-  });
-
-  const result = [...single, ...unique];
   if (result.length) {
     return result;
   }
